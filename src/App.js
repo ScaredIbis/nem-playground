@@ -15,6 +15,7 @@ TrezorConnect.init({
   // webusbSrc: `${ DEFAULT_DOMAIN }webusb.html`,
   connectSrc: "http://localhost:8088/",
   lazyLoad: true,
+  debug: true,
   manifest: {
     email: 'chris@crunchycloud.io',
     appUrl: 'http://localhost:3000'
@@ -60,7 +61,7 @@ function App() {
           onClick={async () => {
             const tx = JSON.parse(text)
             const signTxResult = await TrezorConnect.nem2SignTransaction({
-              path: `m/44'/43'/0'`,
+              path: `m/44'/43'/0'/0'/0'`,
               transaction: tx
             });
 
