@@ -32,7 +32,7 @@ const tx = {
       "recipientAddress": "9010AAF5CEB0A1B21D01624FF3C746329F7A1B559F1C4D969F",
       "message": {
           "type": 0,
-          "payload": "This is a message"
+          "payload": ""
       },
       "mosaics": [
           {

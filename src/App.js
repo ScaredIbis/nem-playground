@@ -26,14 +26,14 @@ function App() {
   // use a transfer transaction by default
   const [text, setText] = useState(`{
     "type": 16724,
-    "networkType": 144,
-    "version": 36865,
+    "network": 152,
+    "version": 38913,
     "maxFee": "20000",
     "deadline": "113248176649",
     "signature": "",
     "recipientAddress": {
-      "address": "SAIKV5OOWCQ3EHIBMJH7HR2GGKPXUG2VT4OE3FU7",
-      "networkType": 144
+      "address": "TAO6QEUC3APBTMDAETMG6IZJI7YOXWHLGC5T4HA4",
+      "networkType": 152
     },
     "mosaics": [
       {
@@ -43,7 +43,7 @@ function App() {
     ],
     "message": {
       "type": 0,
-      "payload": "This is a message"
+      "payload": "Test Transfer"
     }
   }`);
   return (
@@ -62,7 +62,8 @@ function App() {
             const tx = JSON.parse(text)
             const signTxResult = await TrezorConnect.nem2SignTransaction({
               path: `m/44'/43'/0'/0'/0'`,
-              transaction: tx
+              transaction: tx,
+              generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
             });
 
             console.log("RESULT", signTxResult);
