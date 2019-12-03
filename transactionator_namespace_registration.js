@@ -1,5 +1,5 @@
 const { ExtendedKey, MnemonicPassPhrase, Wallet, Network, MACType } = require("nem2-hd-wallets")
-const { Mosaic, MosaicNonce, MosaicFlags, TransferTransaction, MosaicId, MosaicNonceDto, NetworkType, NetworkCurrencyMosaic, PlainMessage, Deadline, Address, UInt64 } = require("nem2-sdk");
+const { Mosaic, NetworkType, NamespaceId, NamespaceRegistrationType, NamespaceRegistrationTransaction, Deadline, Address, UInt64 } = require("nem2-sdk");
 
 const mnemonic = new MnemonicPassPhrase('alcohol woman abuse must during monitor noble actual mixed trade anger aisle');
 // const mnemonic = new MnemonicPassPhrase('core verify kingdom stool finish until coffee you town lady develop album dirt dish security dice suspect access asset annual battle bleak share attack');
@@ -18,18 +18,25 @@ const networkType = NetworkType.TEST_NET
 
 // const transaction = TransferTransaction.create(deadline, recipient, mosaics, message, networkType, maxFee);
 
-const mosaics = [new Mosaic(new MosaicId("308F144790CD7BC4"), UInt64.fromNumericString("1000000000"))];
-const message = PlainMessage.create("Test Transfer");
-
-const transaction = TransferTransaction.create(
-  deadline,
-  Address.createFromRawAddress("TAO6QEUC3APBTMDAETMG6IZJI7YOXWHLGC5T4HA4"),
-  mosaics,
-  // [],
-  message,
+const transaction = new NamespaceRegistrationTransaction(
   networkType,
-  UInt64.fromUint(20000)
-);
+  1,
+  deadline,
+  UInt64.fromUint(20000),
+  NamespaceRegistrationType.RootNamespace,
+  "testnamespace",
+  new NamespaceId("12345"),
+  UInt64.fromUint(1000000),
+)
+
+// const transaction = NamespaceRegistrationTransaction.create(
+//   deadline,
+//   Address.createFromRawAddress("TAO6QEUC3APBTMDAETMG6IZJI7YOXWHLGC5T4HA4"),
+//   mosaics,
+//   // [],
+//   message,
+//   networkType,
+// );
 
 // console.log(JSON.stringify(transaction, null, 2))
 console.log(transaction.serialize())
@@ -43,7 +50,7 @@ const signedTransaction = childAccount.sign(transaction, generationHash);
 console.log("SIGNED", JSON.stringify(signedTransaction, null, 2))
 
 // const transferFromPayload = TransferTransaction.createFromPayload("B1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001985441204E000000000000090A1E5E1A000000981DE81282D81E19B06024D86F232947F0EBD8EB30BB3E1C1C01010000000000C47BCD9047148F3000CA9A3B0000000000")
-const transferFromPayload = TransferTransaction.createFromPayload("be000000000000004e2e4b7fd4d62251fcd56aafb2abc5db93015b5585eefbebabd4e3310f89e971ae863eb9c925089cb7ee12aaef4545291f9feebe05458ed85c1fc3915324830fa8f70e4d5c357273968b12417ae8b742e35e530623c2488d0a73306b412715000000000001985441204e000000000000090a1e5e1a000000981de81282d81e19b06024d86f232947f0ebd8eb30bb3e1c1c010e0000000000c47bcd9047148f3000ca9a3b000000000054657374205472616e73666572c47bcd9047148f3000ca9a3b00000000")
+const transferFromPayload = NamespaceRegistrationTransaction.createFromPayload(transaction.serialize())
 
 console.log("FROM PAYLOAD", JSON.stringify(transferFromPayload, null, 2))
 
