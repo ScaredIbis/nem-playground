@@ -1,5 +1,5 @@
 const { ExtendedKey, MnemonicPassPhrase, Wallet, Network, MACType } = require("nem2-hd-wallets")
-const { Mosaic, NetworkType, NamespaceId, AliasAction, AddressAliasTransaction, Deadline, Address, UInt64 } = require("nem2-sdk");
+const { Mosaic, NetworkType, NamespaceId, NamespaceMetadataTransaction, Deadline, Address, UInt64 } = require("nem2-sdk");
 
 const mnemonic = new MnemonicPassPhrase('alcohol woman abuse must during monitor noble actual mixed trade anger aisle');
 // const mnemonic = new MnemonicPassPhrase('core verify kingdom stool finish until coffee you town lady develop album dirt dish security dice suspect access asset annual battle bleak share attack');
@@ -18,14 +18,18 @@ const networkType = NetworkType.TEST_NET
 
 // const transaction = TransferTransaction.create(deadline, recipient, mosaics, message, networkType, maxFee);
 
-const transaction = new AddressAliasTransaction(
+const metaDataValue = "A new value"
+
+const transaction = new NamespaceMetadataTransaction(
   networkType,
   1,
   deadline,
   UInt64.fromUint(20000),
-  AliasAction.Unlink,
+  childAccount.publicKey,
+  UInt64.fromUint(1),
   new NamespaceId("12345"),
-  childAccount.address
+  metaDataValue.length,
+  metaDataValue
 )
 
 // const transaction = NamespaceRegistrationTransaction.create(
@@ -49,7 +53,7 @@ const signedTransaction = childAccount.sign(transaction, generationHash);
 console.log("SIGNED", JSON.stringify(signedTransaction, null, 2))
 
 // const transferFromPayload = TransferTransaction.createFromPayload("B1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001985441204E000000000000090A1E5E1A000000981DE81282D81E19B06024D86F232947F0EBD8EB30BB3E1C1C01010000000000C47BCD9047148F3000CA9A3B0000000000")
-const transferFromPayload = AddressAliasTransaction.createFromPayload(transaction.serialize())
+const transferFromPayload = NamespaceMetadataTransaction.createFromPayload(transaction.serialize())
 
 console.log("FROM PAYLOAD", JSON.stringify(transferFromPayload, null, 2))
 

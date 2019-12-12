@@ -61,7 +61,7 @@ function App() {
           onClick={async () => {
             const tx = JSON.parse(text)
             const signTxResult = await TrezorConnect.nem2SignTransaction({
-              path: `m/44'/43'/0'/0'/0'`,
+              path: `m/44'/43'/0'`,
               transaction: tx,
               generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
             });

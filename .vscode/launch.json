@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/transactionator_address_alias.js"
+            "program": "${workspaceFolder}/transactionator_namespace_metadata.js"
         }
     ]
 }
