@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import TrezorConnect from "trezor-connect";
+import transactionTypes from "./transactionTypes";
 
 // TrezorConnect.manifest({
 //   email: 'chris@crunchycloud.io',
@@ -24,56 +25,68 @@ TrezorConnect.init({
 
 function App() {
   // use a transfer transaction by default
-  const [text, setText] = useState(`{
-    "type": 16724,
-    "network": 152,
-    "version": 38913,
-    "maxFee": "20000",
-    "deadline": "113248176649",
-    "signature": "",
-    "recipientAddress": {
-      "address": "TAO6QEUC3APBTMDAETMG6IZJI7YOXWHLGC5T4HA4",
-      "networkType": 152
-    },
-    "mosaics": [
-      {
-        "amount": "1000000000",
-        "id": "308F144790CD7BC4"
-      }
-    ],
-    "message": {
-      "type": 0,
-      "payload": "Test Transfer"
-    }
-  }`);
+  const [txIndex, setTxIndex] = useState(0);
+  const [text, setText] = useState(JSON.stringify(transactionTypes[txIndex].body, null, 2));
+  const [path, setPath] = useState("m/44'/43'/0'");
+
+
+  useEffect(() => {
+    setText(JSON.stringify(transactionTypes[txIndex].body, null, 2))
+
+  }, [txIndex])
+
   return (
     <div className="App">
       <header className="App-header">
+        <div>
+          <select
+            style={{ display: "inline-block", marginRight: "5px" }}
+            onChange={event => setTxIndex(event.target.value)}
+          >
+            {transactionTypes.map(({label}, index) => (
+  <option key={index} value={index}>{label}</option>
+            ))}
+          </select>
+          <input
+          value={path}
+          onChange={event => setPath(event.target.value)}
+          style={{
+            width: "200px",
+            display: "inline-block",
+            marginRight: "5px"
+          }}
+        />
+          <button
+            style={{ display: "inline-block" }}
+            onClick={async () => {
+              const tx = JSON.parse(text)
+              const signTxResult = await TrezorConnect.nem2SignTransaction({
+                path,
+                transaction: tx,
+                generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
+              });
+
+              console.log("RESULT", signTxResult);
+            }}
+          >
+            sign tx
+          </button>
+        </div>
         <textarea
           value={text}
           onChange={event => setText(event.target.value)}
           style={{
-            height: "700px",
-            width: "600px"
+            marginTop: "5px",
+            height: "500px",
+            width: "700px"
           }}
         />
-        <button
-          onClick={async () => {
-            const tx = JSON.parse(text)
-            const signTxResult = await TrezorConnect.nem2SignTransaction({
-              path: `m/44'/43'/0'`,
-              transaction: tx,
-              generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
-            });
-
-            console.log("RESULT", signTxResult);
-          }}
-        >
-          sign tx
-        </button>
       </header>
     </div>
   );
 }
 
 export default App;
+
+
+// "a80000000000000091c0b3b58eeae9be128b21b8006b70193c7a92343755503dad65c304f9d162b7eacb5698440ce31e29235334f56a5e39b34bcbdafe5664999cf3cda356e8dd0b252d2e9f95c4671eeb0c67c6666890567e35976b32666263cd390fc188ccf31700000000019855416400000000000000090a1e5e1a000000ffff010000000000596feab15d98bfd75f1743e9dc8a36474a3d0c06ae78ed134c231336c38a6297"
