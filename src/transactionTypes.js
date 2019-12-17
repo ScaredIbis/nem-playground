@@ -7,6 +7,9 @@ import MosaicSupply from './transaction-payloads/mosaic_supply';
 import SecretLock from './transaction-payloads/secret_lock';
 import SecretProof from './transaction-payloads/secret_proof';
 import Aggregate from './transaction-payloads/aggregate';
+import AccountAddressRestriction from './transaction-payloads/account_address_restriction';
+import AccountMosaicRestriction from './transaction-payloads/account_mosaic_restriction';
+import AccountOperationRestriction from './transaction-payloads/account_operation_restriction';
 
 export default [{
     label: "Transfer",
@@ -82,5 +85,17 @@ export default [{
   {
     label: 'Aggregate',
     body: Aggregate
+  },
+  {
+    label: 'AccountAddressRestriction',
+    body: AccountAddressRestriction
+  },
+  {
+    label: 'AccountMosaicRestriction',
+    body: AccountMosaicRestriction
+  },
+  {
+    label: 'AccountOperationRestriction',
+    body: AccountOperationRestriction
   },
 ]
