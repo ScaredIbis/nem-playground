@@ -5,7 +5,7 @@ const mnemonic = new MnemonicPassPhrase('alcohol woman abuse must during monitor
 const ed25519Node = ExtendedKey.createFromSeed(mnemonic.toSeed().toString('hex'), Network.CATAPULT_PUBLIC, MACType.HMAC)
 const wallet = new Wallet(ed25519Node)
 const masterAccount = wallet.getAccount()
-const childAccount = wallet.getChildAccount('m/44\'/43\'/0\'', NetworkType.TEST_NET);
+const childAccount = wallet.getChildAccount('m/44\'/43\'/0\'/0\'/0\'', NetworkType.TEST_NET);
 console.log(`NETWORK ${childAccount.networkType}`)
 console.log(`PUBLIC ${childAccount.publicKey}`)
 console.log(`PRIVATE ${childAccount.privateKey}`)
