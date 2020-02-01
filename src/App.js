@@ -62,8 +62,7 @@ function App() {
               const body = JSON.parse(text)
               let result;
               console.log("txIndex", txIndex)
-              if(txIndex == 2) {
-                console.log("CALLING ENCRYPT MESSAGE")
+              if(txIndex === "2") {
 
                 result = await TrezorConnect.nem2EncryptMessage({
                   path,
@@ -71,18 +70,15 @@ function App() {
                   recipientPublicKey: body.recipientPublicKey
                 });
 
-              } else if (txIndex == 3) {
-                console.log("CALLING ENCRYPT MESSAGE")
+              } else if (txIndex === "3") {
                 result = await TrezorConnect.nem2DecryptMessage({
                   path,
                   payload: body.payload,
                   senderPublicKey: body.senderPublicKey
                 });
 
-                console.log("RESULT PAYLOAD", result.payload);
 
               } else {
-                console.log("CALLING SIGNTX")
                 result = await TrezorConnect.nem2SignTransaction({
                   path,
                   transaction: body,
