@@ -1,29 +1,19 @@
 const { ExtendedKey, MnemonicPassPhrase, Wallet, Network, MACType } = require("nem2-hd-wallets")
-const { Mosaic,
-        MosaicNonce,
-        MosaicFlags,
-        TransferTransaction,
-        MosaicId,
-        MosaicNonceDto,
-        NetworkType,
-        NetworkCurrencyMosaic,
-        PlainMessage,
-        Deadline,
-        Address,
+const { Mosaic, 
+        MosaicNonce, 
+        MosaicFlags, 
+        TransferTransaction, 
+        MosaicId, 
+        NetworkType, 
+        PlainMessage, 
+        Deadline, 
         UInt64,
-        MosaicAliasTransaction,
-        HashLockTransaction,
         AggregateTransaction,
-        AliasAction,
         AggregateTransactionCosignature,
         PublicAccount,
-        CosignatureSignedTransaction,
         Account,
         CosignatureTransaction,
-        TransactionHttp,
-        MosaicDefinitionTransaction,
-        Listener,
-        NamespaceId } = require("nem2-sdk");
+        MosaicDefinitionTransaction} = require("nem2-sdk");
 
 // Wallet setup
 const mnemonic = new MnemonicPassPhrase('alcohol woman abuse must during monitor noble actual mixed trade anger aisle');
@@ -46,6 +36,7 @@ const ticketDistributorPublicAccount = PublicAccount.createFromPublicKey(ticketD
 
 const nonce = new MosaicNonce(new Uint8Array([0xE6, 0xDE, 0x84, 0xB8]));
 const id = MosaicId.createFromNonce(nonce, ticketDistributorPublicAccount)
+
 const aliceToTicketDistributorTx = TransferTransaction.create(
   deadline,
   ticketDistributorPublicAccount.address,
@@ -69,44 +60,30 @@ const aggregateTransaction = AggregateTransaction.createBonded(Deadline.createFr
       mosaicTransaction.toAggregate(ticketDistributorPublicAccount)],
   NetworkType.TEST_NET, [], UInt64.fromUint(100));
 
+
+//
+// Now add cosignatures
+//
+
 const networkGenerationHash = "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7";
-const aggregateSignedTransaction = childAccount.sign(aggregateTransaction, networkGenerationHash);
+const cosig = CosignatureTransaction.signTransactionPayload(aliceAccount, aggregateTransaction.serialize(), networkGenerationHash);
+const cosig2 = CosignatureTransaction.signTransactionPayload(childAccount, aggregateTransaction.serialize(), networkGenerationHash);
+console.log('CosignatureTransaction 1', cosig);
+console.log('CosignatureTransaction 2', cosig2);
 
-hash_lock_deadline = Deadline.createFromDTO("113728610090");
-mosaic_for_hash_lock = NetworkCurrencyMosaic.createRelative(10)
-const hashLockTransaction = HashLockTransaction.create(
-  hash_lock_deadline,
-  mosaic_for_hash_lock,
-  UInt64.fromUint(480),
-  aggregateSignedTransaction,
-  NetworkType.TEST_NET);
+aggregateCosig = new AggregateTransactionCosignature(cosig.signature, aliceAccount)
+aggregateCosig2 = new AggregateTransactionCosignature(cosig2.signature, childAccount)
+console.log('AggregateTransactionCosignature 1', aggregateCosig)
+console.log('AggregateTransactionCosignature 2', aggregateCosig2)
 
-const signedHashLockTransaction = childAccount.sign(hashLockTransaction, networkGenerationHash);
+const aggregateTransaction2 = AggregateTransaction.createBonded(Deadline.createFromDTO("113728610090"),
+  [aliceToTicketDistributorTx.toAggregate(aliceAccount.publicAccount),
+      mosaicTransaction.toAggregate(ticketDistributorPublicAccount)],
+  NetworkType.TEST_NET, [aggregateCosig, aggregateCosig2], UInt64.fromUint(100));
 
-console.log('hashLockTransaction stringified', JSON.stringify(hashLockTransaction.toJSON(), null, 2))
-console.log('hashLockTransaction mosaicId', hashLockTransaction.mosaic.id.toHex())
-console.log('hashLockTransaction', hashLockTransaction)
-console.log('hashLockTransaction serialized', hashLockTransaction.serialize())
-console.log('hashLockTransaction signed', signedHashLockTransaction)
+const signedTransaction2 = childAccount.sign(aggregateTransaction2, networkGenerationHash);
 
-function buf2hex(buffer) {
-  // buffer is an ArrayBuffer
-  // create a byte array (Uint8Array) that we can use to read the array buffer
-  const byteArray = new Uint8Array(buffer)
-
-  // for each element, we want to get its two-digit hexadecimal representation
-  const hexParts = []
-  for (let i = 0; i < byteArray.length; i++) {
-    // convert value to hexadecimal
-    const hex = byteArray[i].toString(16)
-
-    // pad with zeros to length 2
-    const paddedHex = ('00' + hex).slice(-2)
-
-    // push to array
-    hexParts.push(paddedHex)
-  }
-
-  // join all the hex values of the elements into a single string
-  return hexParts.join('')
-}
+console.log('aggregateTransaction2', aggregateTransaction2)
+console.log('aggregateTransaction2 serialized', aggregateTransaction2.serialize())
+console.log('aggregateTransaction2 signed', signedTransaction2)
+console.log("aggregateTransaction2 (stringify)", JSON.stringify(aggregateTransaction, null, 2))

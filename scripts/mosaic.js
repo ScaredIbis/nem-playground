@@ -6,7 +6,7 @@ console.log(buf2hex(mnemonic.toSeed()))
 const ed25519Node = ExtendedKey.createFromSeed(mnemonic.toSeed().toString('hex'), Network.CATAPULT_PUBLIC, MACType.HMAC)
 const wallet = new Wallet(ed25519Node)
 const masterAccount = wallet.getAccount()
-const childAccount = wallet.getChildAccount('m/44\'/43\'/0\'', NetworkType.MAIN_NET);
+const childAccount = wallet.getChildAccount('m/44\'/43\'/0\'/0\'/0\'', NetworkType.TEST_NET);
 console.log(`NETWORK ${childAccount.networkType}`)
 console.log(`PUBLIC ${childAccount.publicKey}`)
 console.log(`PRIVATE ${childAccount.privateKey}`)
@@ -24,7 +24,8 @@ console.log({ id: id.toHex() })
 
 const mosaicSupplyChangeTransaction = MosaicSupplyChangeTransaction.create(
   deadline,
-  id,
+  // id,
+  new MosaicId("4ADB6668071C4969"),
   MosaicSupplyChangeAction.Increase,
   UInt64.fromUint(1000000),
   NetworkType.TEST_NET,
