@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/scripts/multisig_transaction_remove_public_key.js"
+            "program": "${workspaceFolder}/scripts/encrypted_message.js"
         }
     ]
 }

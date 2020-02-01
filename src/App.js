@@ -27,7 +27,7 @@ function App() {
   // use a transfer transaction by default
   const [txIndex, setTxIndex] = useState(0);
   const [text, setText] = useState(JSON.stringify(transactionTypes[txIndex].body, null, 2));
-  const [path, setPath] = useState("m/44'/43'/0'");
+  const [path, setPath] = useState("m/44'/43'/0'/0'/0'");
 
 
   useEffect(() => {
@@ -59,14 +59,38 @@ function App() {
           <button
             style={{ display: "inline-block" }}
             onClick={async () => {
-              const tx = JSON.parse(text)
-              const signTxResult = await TrezorConnect.nem2SignTransaction({
-                path,
-                transaction: tx,
-                generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
-              });
+              const body = JSON.parse(text)
+              let result;
+              console.log("txIndex", txIndex)
+              if(txIndex == 2) {
+                console.log("CALLING ENCRYPT MESSAGE")
 
-              console.log("RESULT", signTxResult);
+                result = await TrezorConnect.nem2EncryptMessage({
+                  path,
+                  payload: body.payload,
+                  recipientPublicKey: body.recipientPublicKey
+                });
+
+              } else if (txIndex == 3) {
+                console.log("CALLING ENCRYPT MESSAGE")
+                result = await TrezorConnect.nem2DecryptMessage({
+                  path,
+                  payload: body.payload,
+                  senderPublicKey: body.senderPublicKey
+                });
+
+                console.log("RESULT PAYLOAD", result.payload);
+
+              } else {
+                console.log("CALLING SIGNTX")
+                result = await TrezorConnect.nem2SignTransaction({
+                  path,
+                  transaction: body,
+                  generationHash: "9F1979BEBA29C47E59B40393ABB516801A353CFC0C18BC241FEDE41939C907E7"
+                });
+              }
+
+              console.log("RESULT", result);
             }}
           >
             sign tx

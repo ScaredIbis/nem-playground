@@ -38,4 +38,16 @@ export default [{
     ],
     "publicKeyDeletions": []
   }
+}, {
+  label: "Encrypt Message",
+  body: {
+    recipientPublicKey: "596FEAB15D98BFD75F1743E9DC8A36474A3D0C06AE78ED134C231336C38A6297",
+    payload: "A test message"
+  }
+}, {
+  label: "Decrypt Message",
+  body: {
+    senderPublicKey: "596FEAB15D98BFD75F1743E9DC8A36474A3D0C06AE78ED134C231336C38A6297",
+    payload: "12aa902949c24c9814e7de8663a7c67666e5e1c38d3d44978841311e477753cbfa4b2177116bcff83c2949f86bf36f05d872ccbc283c6bb648a80149c367819a"
+  }
 }]
